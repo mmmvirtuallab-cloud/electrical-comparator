@@ -306,10 +306,10 @@ export const pageContent = {
       {
         type: "list",
         items: [
-          "A. M. ISMAIL - 2023507030 ",
-          "V. B. JAYARAM - 2023507040 ",
-          "M. RAM BHARATH - 2023507039 ",
-          "R. MONISH KUMAR - 2023507038 ",
+          "E. VINOTH - 2023507001",
+          "M. Desakar - 2023507003",
+          "N. S. ASHWIN - 2023507027",
+          "J. KARALAN - 2023507028"
         ],
       },
     ],

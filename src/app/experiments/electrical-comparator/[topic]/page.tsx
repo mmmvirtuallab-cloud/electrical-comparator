@@ -1,3 +1,8 @@
+// File: src/app/experiments/electrical-comparator/[topic]/page.tsx
+
+import React from 'react';
+import ElectricalComparatorHomePage from '../../../../ComparatorPage';
+
 // This function tells Next.js which pages to build
 export async function generateStaticParams() {
   const topics = [
@@ -8,29 +13,19 @@ export async function generateStaticParams() {
     "Test2",
     "Acknowledgement",
   ];
- 
+
   return topics.map((topic) => ({
     topic: topic,
   }));
 }
 
-// This is a Server Component, so we do NOT put "use client" here.
-// It receives 'params' as a prop.
-import React from 'react';
-import ElectricalComparatorHomePage from '../../../../ComparatorPage'; // Import the client component
+// This is the main page component (a Server Component).
+// We define the type for 'params' right here.
+export default function DynamicExperimentPage({ params }: { params: { topic: string } }) {
 
-// This structure is correct
-type DynamicPageProps = {
-    params: {
-        topic: string;
-    };
-};
-
-// This is the main page component. It's a Server Component.
-export default function DynamicExperimentPage({ params }: DynamicPageProps) {
+  // Get the topic from the params prop
   const currentTopic = params.topic;
 
-  // It renders the 'ElectricalComparatorHomePage' (which is a client component)
-  // and passes the topic to it as a prop.
+  // Render the Client Component and pass the topic as a prop
   return <ElectricalComparatorHomePage topic={currentTopic} />;
 }
