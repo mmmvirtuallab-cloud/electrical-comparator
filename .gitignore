@@ -23,3 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 .next
+
+
+git remote add origin git@github.com-virtuallab:mmmvirtuallab-cloud/electrical-comparator.git
+git@github.com:mmmvirtuallab-cloud/electrical-comparator.git

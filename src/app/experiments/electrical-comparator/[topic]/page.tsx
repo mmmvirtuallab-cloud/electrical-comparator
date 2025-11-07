@@ -1,4 +1,21 @@
 // File: src/app/experiments/electrical-comparator/[topic]/page.tsx
+
+export async function generateStaticParams() {
+  // These are all the topics you want to pre-build
+  const topics = [
+    "Aim",
+    "Theory",
+    "Procedure",
+    "Test1",
+    "Test2",
+    "Acknowledgement",
+  ];
+
+  return topics.map((topic) => ({
+    topic: topic,
+  }));
+}
+
 "use client"; 
 
 import React from 'react';
