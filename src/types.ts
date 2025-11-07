@@ -53,3 +53,8 @@ export interface Reading {
   measured: string;
   deviation: string;
 }
+
+// Props used by the Electrical Comparator client page
+export interface ComparatorPageProps {
+  topic: string;
+}

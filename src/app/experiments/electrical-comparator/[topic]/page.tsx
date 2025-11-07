@@ -1,10 +1,6 @@
-// File: src/app/experiments/electrical-comparator/[topic]/page.tsx
+import dynamic from "next/dynamic";
+import type { ComparatorPageProps } from "../../../../types";
 
-import React from 'react';
-// Make sure this import path is correct
-import ElectricalComparatorHomePage from '../../../../ComparatorPage'; 
-
-// This function tells Next.js which pages to build
 export async function generateStaticParams() {
   const topics = [
     "Aim",
@@ -15,32 +11,19 @@ export async function generateStaticParams() {
     "Acknowledgement",
   ];
 
-  return topics.map((topic) => ({
-    topic: topic,
-  }));
+  return topics.map((topic) => ({ topic }));
 }
 
-// --- THIS IS THE FIX ---
-// Define the correct props type.
-// Next.js passes BOTH params and searchParams.
-type DynamicPageProps = {
-  params: {
-    topic: string;
-  };
-  searchParams: {
-    [key: string]: string | string[] | undefined;
-  };
+type PageProps = {
+  params: { topic: string };
 };
 
-// This is the main page component.
-// Use the 'DynamicPageProps' type we just defined.
-export default function DynamicExperimentPage({ params }: DynamicPageProps) {
-  
-  // Get the topic from the params prop
-  const currentTopic = params.topic;
+// ✅ Correct usage: use the props type itself
+const ElectricalComparatorHomePage = dynamic<ComparatorPageProps>(
+  () => import("../../../../ComparatorPage"),
+  { ssr: false }
+);
 
-  // Render your Client Component and pass the topic to it.
-  // ElectricalComparatorHomePage must be a client component ("use client")
-  // because it uses state and router.
-  return <ElectricalComparatorHomePage topic={currentTopic} />;
+export default function DynamicExperimentPage({ params }: PageProps) {
+  return <ElectricalComparatorHomePage topic={params.topic} />;
 }
