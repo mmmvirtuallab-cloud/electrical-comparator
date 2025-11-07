@@ -1,0 +1,43 @@
+# File: .github/workflows/nextjs-pages.yml
+
+name: Build and Deploy to GitHub Pages
+
+on:
+  # Run on pushes to the 'main' branch
+  push:
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Checks out your 'main' branch code
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      # 2. Sets up Node.js for the build
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # 3. Installs dependencies and builds the static site
+      #    It knows to build to an 'out' folder because of your next.config.mjs
+      - name: Install and Build 🔧
+        run: |
+          npm ci
+          npm run build
+
+      # 4. This action takes the build output from the './out' folder
+      #    and pushes it to your 'gh-pages' branch.
+      - name: Deploy 🚀
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          # This token is created automatically by GitHub
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          
+          # This is the folder Next.js builds to (because of output: 'export')
+          publish_dir: ./out
