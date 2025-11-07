@@ -1,7 +1,5 @@
-// File: src/app/experiments/electrical-comparator/[topic]/page.tsx
-
+// This function tells Next.js which pages to build
 export async function generateStaticParams() {
-  // These are all the topics you want to pre-build
   const topics = [
     "Aim",
     "Theory",
@@ -10,25 +8,29 @@ export async function generateStaticParams() {
     "Test2",
     "Acknowledgement",
   ];
-
+ 
   return topics.map((topic) => ({
     topic: topic,
   }));
 }
 
-"use client"; 
-
+// This is a Server Component, so we do NOT put "use client" here.
+// It receives 'params' as a prop.
 import React from 'react';
-import { useParams } from 'next/navigation'; // <-- 1. Import the hook
-import ElectricalComparatorHomePage from '../../../../ComparatorPage';
+import ElectricalComparatorHomePage from '../../../../ComparatorPage'; // Import the client component
 
-// 2. Remove props, we don't need them
-export default function DynamicExperimentPage() { 
-  const params = useParams(); // <-- 3. Call the hook
-  
-  // 4. Get the topic from the hook's result
-  const currentTopic = params.topic; 
+// This structure is correct
+type DynamicPageProps = {
+    params: {
+        topic: string;
+    };
+};
 
- // 5. Pass it as a string
- return <ElectricalComparatorHomePage topic={currentTopic as string} />;
+// This is the main page component. It's a Server Component.
+export default function DynamicExperimentPage({ params }: DynamicPageProps) {
+  const currentTopic = params.topic;
+
+  // It renders the 'ElectricalComparatorHomePage' (which is a client component)
+  // and passes the topic to it as a prop.
+  return <ElectricalComparatorHomePage topic={currentTopic} />;
 }
