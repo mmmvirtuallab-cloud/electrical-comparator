@@ -11,7 +11,7 @@ import styles from "./ComparatorPage.module.css";
 import { NavItem } from "./types"; // <-- Import the NavItem type
 
 // Define the props this component accepts
-interface ComparatorPageProps {
+export interface ComparatorPageProps {
   topic: string;
 }
 
