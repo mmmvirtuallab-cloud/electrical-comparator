@@ -1,5 +1,6 @@
-import dynamic from "next/dynamic";
-import type { ComparatorPageProps } from "../../../../types";
+// File: src/app/experiments/electrical-comparator/[topic]/page.tsx
+
+import ElectricalComparatorHomePage from "../ClientWrapper";
 
 export async function generateStaticParams() {
   const topics = [
@@ -17,12 +18,6 @@ export async function generateStaticParams() {
 type PageProps = {
   params: { topic: string };
 };
-
-// ✅ Correct usage: use the props type itself
-const ElectricalComparatorHomePage = dynamic<ComparatorPageProps>(
-  () => import("../../../../ComparatorPage"),
-  { ssr: false }
-);
 
 export default function DynamicExperimentPage({ params }: PageProps) {
   return <ElectricalComparatorHomePage topic={params.topic} />;
