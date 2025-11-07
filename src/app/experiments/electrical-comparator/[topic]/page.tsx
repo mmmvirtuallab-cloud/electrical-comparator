@@ -3,14 +3,7 @@
 import React from 'react';
 import ElectricalComparatorHomePage from '../../../../ComparatorPage';
 
-// 1. This defines the props that Next.js will pass to your page
-interface PageProps {
-  params: { topic: string };
-  // We include searchParams for full type compliance, even if you don't use it
-  searchParams: { [key: string]: string | string[] | undefined };
-}
-
-// 2. This function (for static export) stays the same
+// This function tells Next.js which pages to build
 export async function generateStaticParams() {
   const topics = [
     "Aim",
@@ -20,15 +13,22 @@ export async function generateStaticParams() {
     "Test2",
     "Acknowledgement",
   ];
- 
+
   return topics.map((topic) => ({
     topic: topic,
   }));
 }
 
-// 3. This is your page component, now using the correct PageProps type
-export default function DynamicExperimentPage({ params }: PageProps) {
-  
+// This is the main page component (a Server Component).
+// We are defining the full, correct type for its props inline.
+export default function DynamicExperimentPage({
+  params,
+  searchParams  // <-- This was the missing piece
+}: {
+  params: { topic: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+
   // Get the topic from the params prop
   const currentTopic = params.topic;
 
