@@ -1,18 +1,33 @@
-import React, { useState, useEffect } from "react"; // Added useEffect
+// File: src/InfoPageLayout.tsx
+
+import React, { useState, useEffect } from "react";
 import styles from "./InfoPage.module.css";
+import { PageContent, Question } from "./types"; // <-- Import shared types
 
-const InfoPageLayout = ({ pageKey, content }) => {
+// Define the props for this component
+interface InfoPageLayoutProps {
+  pageKey: string;
+  content: PageContent;
+}
+
+// Type for the 'answers' state
+type AnswersState = {
+  [key: string]: number; // e.g., { 'pre_q1': 0, 'pre_q2': 2 }
+};
+
+const InfoPageLayout = ({ pageKey, content }: InfoPageLayoutProps) => {
   const pageData = content[pageKey];
-  const [answers, setAnswers] = useState({});
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [score, setScore] = useState(null);
 
-  // **NEW: Reset state when the pageKey changes (e.g., from Pretest to Posttest)**
+  // Add types to state hooks
+  const [answers, setAnswers] = useState<AnswersState>({});
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [score, setScore] = useState<number | null>(null);
+
   useEffect(() => {
     setAnswers({});
     setIsSubmitted(false);
     setScore(null);
-  }, [pageKey]); // Dependency array includes pageKey
+  }, [pageKey]);
 
   if (!pageData) {
     return (
@@ -23,13 +38,16 @@ const InfoPageLayout = ({ pageKey, content }) => {
     );
   }
 
+  // Find the MCQ section (this is safer with types)
   const mcqSection = pageData.sections.find((sec) => sec.type === "mcq");
-  const questions = mcqSection?.questions || [];
+  
+  // Type-guard to ensure mcqSection is of type 'mcq' before accessing 'questions'
+  const questions: Question[] = 
+    mcqSection && mcqSection.type === "mcq" ? mcqSection.questions : [];
 
-  // --- NEW: Check if all questions have been answered ---
   const allQuestionsAnswered = Object.keys(answers).length === questions.length;
 
-  const handleAnswerSelect = (questionId, optionIndex) => {
+  const handleAnswerSelect = (questionId: string, optionIndex: number) => {
     if (isSubmitted) return;
     setAnswers((prev) => ({
       ...prev,
@@ -38,12 +56,12 @@ const InfoPageLayout = ({ pageKey, content }) => {
   };
 
   const handleSubmit = () => {
-    if (!questions.length || !allQuestionsAnswered) return; // Extra check
+    if (!questions.length || !allQuestionsAnswered) return;
 
     let correctCount = 0;
-    questions.forEach((q, qIndex) => {
-      const questionId = q.id || qIndex;
-      if (answers[questionId] === q.correctAnswerIndex) {
+    questions.forEach((q) => {
+      // Use q.id which is guaranteed by our type
+      if (answers[q.id] === q.correctAnswerIndex) {
         correctCount++;
       }
     });
@@ -57,7 +75,11 @@ const InfoPageLayout = ({ pageKey, content }) => {
       <h1>{pageData.title}</h1>
       {pageData.sections.map((section, index) => (
         <React.Fragment key={index}>
+          {/* Use type-guards for rendering sections */}
           {section.type === "paragraph" && <p>{section.text}</p>}
+          {section.type === "heading" && section.level === 2 && (
+             <h2>{section.text}</h2>
+          )}
           {section.type === "list" && (
             <ul>
               {section.items.map((item, i) => (
@@ -68,7 +90,7 @@ const InfoPageLayout = ({ pageKey, content }) => {
           {section.type === "mcq" && questions.length > 0 && (
             <div className={styles.mcqContainer}>
               {questions.map((q, qIndex) => {
-                const questionId = q.id || qIndex;
+                const questionId = q.id; // Use the id from the question object
                 const userAnswer = answers[questionId];
                 const isCorrect = userAnswer === q.correctAnswerIndex;
 
@@ -107,18 +129,12 @@ const InfoPageLayout = ({ pageKey, content }) => {
                               {option}
                               {isSubmitted &&
                                 optionIndex === q.correctAnswerIndex && (
-                                  <span className={styles.feedbackMark}>
-                                    {" "}
-                                    ✔
-                                  </span>
+                                  <span className={styles.feedbackMark}> ✔</span>
                                 )}
                               {isSubmitted &&
                                 optionIndex === userAnswer &&
                                 !isCorrect && (
-                                  <span className={styles.feedbackMark}>
-                                    {" "}
-                                    ✖
-                                  </span>
+                                  <span className={styles.feedbackMark}> ✖</span>
                                 )}
                             </label>
                           </li>
@@ -132,7 +148,6 @@ const InfoPageLayout = ({ pageKey, content }) => {
                 <button
                   onClick={handleSubmit}
                   className={styles.submitButton}
-                  // --- MODIFIED: Added disabled prop ---
                   disabled={!allQuestionsAnswered}
                 >
                   Submit Answers

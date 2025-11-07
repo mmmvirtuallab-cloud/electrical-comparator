@@ -1,17 +1,22 @@
-// File: .\src/ComparatorPage.jsx
+// File: src/ComparatorPage.tsx
 
-"use client"; // <-- CRITICAL: Declares this as a Client Component for Next.js
+"use client";
 
 import React, { useState } from "react";
-// REMOVE REACT ROUTER HOOKS: useNavigate, useParams
-import { useRouter } from "next/navigation"; // <-- Use Next.js Router
-import InfoPageLayout from "./InfoPageLayout"; // Corrected path
+import { useRouter } from "next/navigation";
+import InfoPageLayout from "./InfoPageLayout";
 import MobileNavBar from "./components/MobileNavBar";
-import { pageContent } from "./data/content";
-import styles from "./ComparatorPage.module.css"; // Corrected CSS path
+import { pageContent } from "./data/content"; // <-- Now imports from .ts file
+import styles from "./ComparatorPage.module.css";
+import { NavItem } from "./types"; // <-- Import the NavItem type
 
-// Updated navItems for Electrical Comparator
-const navItems = [
+// Define the props this component accepts
+interface ComparatorPageProps {
+  topic: string;
+}
+
+// Updated navItems for Electrical Comparator (now typed)
+const navItems: NavItem[] = [
   { key: "Aim", path: "/experiments/electrical-comparator/Aim", label: "Aim" },
   {
     key: "Theory",
@@ -45,21 +50,19 @@ const navItems = [
   },
 ];
 
-// MODIFIED: Accepts 'topic' as a prop
-function ElectricalComparatorHomePage({ topic }) {
-  const router = useRouter(); // Initialize Next.js router
+// Use the props type here
+function ElectricalComparatorHomePage({ topic }: ComparatorPageProps) {
+  const router = useRouter();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Use the prop 'topic' passed by the Next.js routing file, defaulting to "Aim"
-  const currentTopic = topic || "Aim";
+  // Use the prop 'topic' passed by the Next.js routing file
+  const currentTopic = topic;
 
-  // MODIFIED: Use router.push() for navigation
-  const handleNavClick = (key) => {
+  const handleNavClick = (key: string) => {
     if (key === "Simulation") {
       router.push("/lab/electrical-comparator");
     } else {
-      // Navigates to the dynamic route: /experiments/electrical-comparator/[topic]
       router.push(`/experiments/electrical-comparator/${key}`);
     }
   };
@@ -68,7 +71,7 @@ function ElectricalComparatorHomePage({ topic }) {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const handleMobileNavClick = (key) => {
+  const handleMobileNavClick = (key: string) => {
     setIsMobileMenuOpen(false);
     handleNavClick(key);
   };
@@ -91,7 +94,6 @@ function ElectricalComparatorHomePage({ topic }) {
           Electrical Comparator Virtual Lab
         </h1>
 
-        {/* Assuming MobileNavBar exists and works */}
         <MobileNavBar
           navItems={navItems}
           currentTopicKey={currentTopic}
@@ -119,6 +121,7 @@ function ElectricalComparatorHomePage({ topic }) {
         </nav>
 
         <div className={styles.mainContent}>
+          {/* This component is now type-safe */}
           <InfoPageLayout pageKey={contentKey} content={pageContent} />
         </div>
       </div>
