@@ -480,13 +480,6 @@ const ElectricalComparator = () => {
             <h3>Measurement Controls</h3>
 
             <div className="button-group">
-              <button
-                ref={lockHeadRef}
-                onClick={() => setIsHeadLocked(!isHeadLocked)}
-                className={`lock-button ${isHeadLocked ? "locked" : ""}`}
-              >
-                {isHeadLocked ? "Unlock Head" : "Lock Head"}
-              </button>
               <button onClick={handleAddReading} className="store-button">
                 Store Reading
               </button>
