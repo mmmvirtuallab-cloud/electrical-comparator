@@ -254,7 +254,7 @@ const ElectricalComparator = () => {
             className="exit-btn"
             onClick={() => navigate("/")} // <--- Navigates to IntroPage inside HashRouter
           >
-            Exit Lab
+            Introduction
           </button>
         </div>
       </header>
